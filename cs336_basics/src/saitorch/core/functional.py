@@ -4,9 +4,9 @@ def sigmoid(x:torch.Tensor) -> torch.Tensor:
     return 1 /(1 + torch.exp(-x))
 
 def softmax(x:torch.Tensor, dim) -> torch.tensor:
-    shift  = torch.max(x,dim=dim,keepdim=False).values
+    shift  = torch.max(x,dim=dim,keepdim=True).values
     num = torch.exp(x - shift)
-    den = torch.sum(num,dim=dim,keepdim=False)
+    den = torch.sum(num,dim=dim,keepdim=True)
     return num/den
 
 def logsoftmax(x: torch.Tensor,dim: int) -> torch.Tensor:
