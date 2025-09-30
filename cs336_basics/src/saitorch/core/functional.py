@@ -10,7 +10,7 @@ def softmax(x:torch.Tensor, dim) -> torch.tensor:
     return num/den
 
 def logsoftmax(x: torch.Tensor,dim: int) -> torch.Tensor:
-    torch.log(softmax(x,dim=dim))
+    return torch.log(softmax(x,dim=dim))
 
 def relu (x:torch.Tensor) -> torch.Tensor:
     return torch.maximum(x,torch.tensor(0.0))
