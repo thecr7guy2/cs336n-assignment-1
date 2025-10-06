@@ -23,3 +23,9 @@ def gelu(x:torch.Tensor) -> torch.Tensor:
 
 def tanh(x:torch.Tensor) -> torch.Tensor:
     pass
+
+
+
+
+
+

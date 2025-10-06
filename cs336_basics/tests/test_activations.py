@@ -1,8 +1,6 @@
 import torch
 from saitorch.nn.activations import Sigmoid,Softmax,RELU
 
-
-
 def test_sigmoid():
     model = Sigmoid()
     x = torch.tensor([0.0, 2.0, -2.0])
