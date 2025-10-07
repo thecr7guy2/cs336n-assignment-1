@@ -29,7 +29,6 @@ class RMSprop(Optimizer):
     def step(self):
         """
         """
-
         for i in self.param_groups:
             params = i["params"]
             weight_decay = i["weight_decay"]
