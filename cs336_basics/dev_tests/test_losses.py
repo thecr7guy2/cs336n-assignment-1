@@ -1,4 +1,4 @@
-from saitorch.nn.loss import CrossEntropyLoss
+from cs336_basics.saitorch.nn.loss import CrossEntropyLoss
 import torch
 
 def test_cross_entropy():

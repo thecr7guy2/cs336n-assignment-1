@@ -3,8 +3,8 @@ from torch import nn
 from torch.optim import SGD as TorchSGD
 from torch.optim import RMSprop as TorchRMSProp
 from torch.optim import Adam as TorchAdam
-from saitorch.optim import SGD, RMSprop, Adam
-from saitorch.nn.loss import CrossEntropyLoss
+from cs336_basics.saitorch.optim import SGD, RMSprop, Adam
+from cs336_basics.saitorch.nn.loss import CrossEntropyLoss
 
 torch.manual_seed(0)
 

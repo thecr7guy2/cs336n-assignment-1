@@ -1,5 +1,5 @@
 import torch
-from saitorch.nn.activations import Sigmoid,Softmax,RELU
+from cs336_basics.saitorch.nn.activations import Sigmoid,Softmax,RELU
 
 def test_sigmoid():
     model = Sigmoid()
