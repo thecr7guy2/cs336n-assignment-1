@@ -48,7 +48,8 @@ class RMSprop(Optimizer):
                 state = self.state[param]
                 square_avg = state.get("square_avg")
                 if square_avg is None:
-                    square_avg = gr.mul(gr,alpha=(1-alpha))
+                    square_avg = gr.mul(gr)
+                    square_avg.mul_(1-alpha)
                     state["square_avg"] = square_avg
                 else:
                     square_avg.mul_(alpha).addcmul_(gr,gr,value=(1-alpha))
@@ -56,17 +57,17 @@ class RMSprop(Optimizer):
                 if momentum !=0 :
                     mom_buffer = state.get("momentum_buffer")
                     if mom_buffer is None:
-                        mom_buffer = gr
+                        mom_buffer = gr.div(square_avg.sqrt().add(eps))
                         state["momentum_buffer"] = mom_buffer
                     else:
-                        mom_buffer.mul_(momentum).addcdiv_(gr,square_avg.add(eps).sqrt())
+                        mom_buffer.mul_(momentum).addcdiv_(gr,square_avg.sqrt().add(eps))
                 
                     gr = mom_buffer
 
                     param.add_(mom_buffer,alpha = -lr)
                 
                 else:
-                    param.addcdiv_(gr,square_avg.add(eps).sqrt(),alpha = -lr)
+                    param.addcdiv_(gr,square_avg.sqrt().add(eps),value= -lr)
                 
 
 
