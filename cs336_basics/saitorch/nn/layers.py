@@ -18,3 +18,20 @@ class Linear(Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
             x = x.matmul(self.weight.t())
             return x
+
+
+class Embedding(Module):
+    """
+    Still Need to undertsnad how to use device and dtype
+    """
+    def __init__(self,num_embeddings, embedding_dim, device=None, dtype=None):
+        super(Embedding, self).__init__()
+     
+        self.weight = Parameter(torch.empty(num_embeddings, embedding_dim),requires_grad=True)
+        self.reset_parameters()
+    
+    def reset_parameters(self) -> None:
+        torch.nn.init.trunc_normal_(self.weight, mean=0.0, std=1.0, a=-2.0, b=2.0, generator=None)
+
+    def forward(self, token_ids: torch.Tensor) -> torch.Tensor:
+         return self.weight[token_ids]

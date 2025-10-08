@@ -9,7 +9,7 @@ import torch
 from jaxtyping import Bool, Float, Int
 from torch import Tensor
 from cs336_basics.saitorch.core.functional import softmax
-from cs336_basics.saitorch.nn.layers import Linear
+from cs336_basics.saitorch.nn.layers import Linear,Embedding
 
 def run_linear(
     d_in: int,
@@ -68,8 +68,10 @@ def run_embedding(
     Returns:
         Float[Tensor, "... d_model"]: Batch of embeddings returned by your Embedding layer.
     """
-
-    raise NotImplementedError
+    wte = Embedding(vocab_size,d_model)
+    state_dict_temp = {"weight" : weights }
+    wte.load_state_dict(state_dict_temp)
+    return wte(token_ids)
 
 
 def run_swiglu(
