@@ -9,6 +9,7 @@ import torch
 from jaxtyping import Bool, Float, Int
 from torch import Tensor
 from cs336_basics.saitorch.core.functional import softmax
+from cs336_basics.saitorch.nn.layers import Linear
 
 def run_linear(
     d_in: int,
@@ -28,8 +29,25 @@ def run_linear(
     Returns:
         Float[Tensor, "... d_out"]: The transformed output of your linear module.
     """
+    # layer1 = Linear(in_features=d_in,out_features=d_out)
+    # with torch.no_grad():
+    #     layer1.weight.copy_(weights)
+    # output = layer1(in_features)
+    # return output
 
-    raise NotImplementedError
+    # layer1 = Linear(in_features=d_in,out_features=d_out)
+    # state_dict = layer1.state_dict()
+    # state_dict['weight'] = weights
+    # layer1.load_state_dict(state_dict)
+    # output = layer1(in_features)
+    # return output
+
+    layer1 = Linear(in_features=d_in, out_features=d_out)
+    state_dict = {"weight": weights}
+    layer1.load_state_dict(state_dict)
+    output = layer1(in_features)
+    return output
+
 
 
 def run_embedding(
