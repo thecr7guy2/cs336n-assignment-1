@@ -1,5 +1,5 @@
 import torch
-from cs336_basics.saitorch.nn.activations import Sigmoid,Softmax,RELU
+from cs336_basics.saitorch.nn.activations import Sigmoid,Softmax,ReLU,SiLU
 
 def test_sigmoid():
     model = Sigmoid()
@@ -18,9 +18,17 @@ def test_softmax():
     assert(torch.allclose(y, ref, atol=1e-6))
 
 def test_relu():
-    model = RELU()
+    model = ReLU()
     x = torch.tensor([[0.0, 2.0, -2.0],[1.0,2.0,9.0]])
     y = model(x)
     model2 = torch.nn.ReLU()
+    ref = model2(x)
+    assert(torch.allclose(y, ref, atol=1e-6))
+
+def test_silu():
+    model = SiLU()
+    x = torch.tensor([[0.0, 2.0, -2.0],[1.0,2.0,9.0]])
+    y = model(x)
+    model2 = torch.nn.SiLU()
     ref = model2(x)
     assert(torch.allclose(y, ref, atol=1e-6))

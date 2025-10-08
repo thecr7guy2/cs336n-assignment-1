@@ -1,11 +1,10 @@
 from torch.nn import Module
 import torch
-from ..core.functional import sigmoid,softmax,relu
+from ..core.functional import sigmoid,softmax,relu,silu
 
 class Sigmoid(Module):
     def __init__(self):
         super(Sigmoid, self).__init__()
-
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = sigmoid(x)
         return x
@@ -18,9 +17,16 @@ class Softmax(Module):
         x = softmax(x,self.dim)
         return x
 
-class RELU(Module):
+class ReLU(Module):
     def __init__(self):
-        super(RELU, self).__init__()
+        super(ReLU, self).__init__()
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = relu(x)
+        return x
+
+class SiLU(Module):
+    def __init__(self):
+        super(SiLU, self).__init__()
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = silu(x)
         return x

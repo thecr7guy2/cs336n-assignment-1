@@ -15,6 +15,9 @@ def logsoftmax(x: torch.Tensor,dim: int) -> torch.Tensor:
 def relu (x:torch.Tensor) -> torch.Tensor:
     return torch.maximum(x,torch.tensor(0.0))
 
+def silu (x:torch.Tensor) -> torch.Tensor:
+    return x * sigmoid(x)
+
 def swiglu (x:torch.Tensor) -> torch.Tensor:
     pass
 
