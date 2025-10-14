@@ -1,5 +1,4 @@
 
-[0,1,2,3,4,5]
 def form_pairs(text_in_bytes):
     pairs={}
     for i in range(0,len(text_in_bytes)-1):
@@ -31,12 +30,14 @@ def replace_popular_pair(text_in_bytes,popular_pair,index2rep):
     return new_text
 
 
-def get_merges(text_in_bytes,index2rep):
+def get_merges(text_in_bytes,index2rep,max_merges=None):
     merges = []
+    if max_merges is None:
+        max_merges = float("inf")
     while(True):
         pairs = form_pairs(text_in_bytes)
         popular_pair,count = get_popular_pair(pairs)
-        if count > 1:
+        if count > 1 and len(merges) < max_merges:
             merges.append(popular_pair)
             new_text =  replace_popular_pair(text_in_bytes,popular_pair,index2rep)
             index2rep = index2rep + 1
@@ -45,7 +46,6 @@ def get_merges(text_in_bytes,index2rep):
             break 
     
     return merges
-
 
 def get_ranks(merges):
     merges_rank = {}
@@ -67,33 +67,61 @@ def training(training_text:str):
 
 
 def encode(text:str,merges_rank,pair_to_id) -> list:
-    encoded_list = []
     text_in_bytes = list(text.encode("utf-8"))
-    i =0 
-    while(i<len(text_in_bytes)):
-        if i< len(text_in_bytes)-1:
-            pair = text_in_bytes[i],text_in_bytes[i+1]
-            if pair in merges_rank:
-                encoded_list.append(pair_to_id[pair])
-                i = i + 2
-            else:
-                encoded_list.append(text_in_bytes[i])
-                i = i + 1 
+    while(True):
+        pairs = form_pairs(text_in_bytes)
+        for i in merges_rank.keys():
+            if i in pairs:
+                lowest_rank = i
+                index2rep = pair_to_id[lowest_rank]
+                new_text = replace_popular_pair(text_in_bytes,lowest_rank,index2rep)
+                text_in_bytes = new_text
+                break
         else:
-            encoded_list.append(text_in_bytes[i])
-            i = i + 1
+            return text_in_bytes
+        
+def decode(encoded_list:list,id_to_pair:dict) -> str :
+    i = 0
+    while(i<len(encoded_list)-1):
+        if encoded_list[i] > 256:
+            encoded_list[i:i+1] = list(id_to_pair[encoded_list[i]])
+        if encoded_list [i] <= 256:
+            i = i+1
+    return bytes(encoded_list).decode("utf-8")
+
+
+    # while(i<len(text_in_bytes)):
+    #     if i< len(text_in_bytes)-1:
+    #         pair = text_in_bytes[i],text_in_bytes[i+1]
+    #         if pair in merges_rank:
+    #             encoded_list.append(pair_to_id[pair])
+    #             i = i + 2
+    #         else:
+    #             encoded_list.append(text_in_bytes[i])
+    #             i = i + 1 
+    #     else:
+    #         encoded_list.append(text_in_bytes[i])
+    #         i = i + 1
 
 
 def main():
-    training_text = '''
-           You will require prior written permission for the reimbursement of ambulance transport in these 2 situations:
-           transport over a distance of more than 200 km
-           transport by any mode of transport other than an ambulance
-           Consent is not required in the case of unforeseen care that cannot reasonably be postponed.
-           A request for transport should include a report from the treating doctor, including the medical diagnosis/diagnoses, a description of the current problem and substantiation of the request. Please send requests for permission to:
-        '''
+    training_text = "aaaaaaaabbbabcbababbab"
+
+
+
+
+
+
     
-    merges,a,b,c = training(training_text)
+    merges,merge_rank,pair_to_id,id_to_pair = training(training_text)
+    c = encode("aaabcbcndhbb",merge_rank,pair_to_id)
+    print(c)
+    print(id_to_pair)
+    d = decode(c,id_to_pair)
+    print(d)
+    # a = [1,2,3]
+    # b = form_pairs(a)
+    # print(b)
     
 
 
