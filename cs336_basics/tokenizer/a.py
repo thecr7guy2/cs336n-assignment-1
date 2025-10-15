@@ -54,14 +54,14 @@ def get_ranks(merges):
 
     for i,j in enumerate(merges):
         merges_rank[j] = i
-        pair_to_id[j] = 257 + i
-        id_to_pair[257+i] = j
+        pair_to_id[j] = 256 + i
+        id_to_pair[256+i] = j
 
     return merges_rank,pair_to_id,id_to_pair
 
 def training(training_text:str):
     text_in_bytes = list(training_text.encode("utf-8"))
-    merges = get_merges(text_in_bytes,257)
+    merges = get_merges(text_in_bytes,256)
     a,b,c = get_ranks(merges)
     return merges,a,b,c
 
@@ -82,10 +82,10 @@ def encode(text:str,merges_rank,pair_to_id) -> list:
         
 def decode(encoded_list:list,id_to_pair:dict) -> str :
     i = 0
-    while(i<len(encoded_list)-1):
-        if encoded_list[i] > 256:
+    while(i<len(encoded_list)):
+        if encoded_list[i] > 255:
             encoded_list[i:i+1] = list(id_to_pair[encoded_list[i]])
-        if encoded_list [i] <= 256:
+        if encoded_list [i] <= 255:
             i = i+1
     return bytes(encoded_list).decode("utf-8")
 
@@ -105,17 +105,17 @@ def decode(encoded_list:list,id_to_pair:dict) -> str :
 
 
 def main():
-    training_text = "aaaaaaaabbbabcbababbab"
-
-
-
-
-
-
+    training_text = '''తెలుగు తెలంగాణ, ఆంధ్ర రాష్ట్రాలలోని అధికారిక భాష. ఇది ద్రావిడ భాషా కుటుంబానికి చెందిన భాష. భారతదేశంలో ఒకటి కంటే ఎక్కువ రాష్ట్రాలలో మాటలాడే అధికారిక భాషలలో హిందీ, బెంగాలీలతో పాటు తెలుగు ఒకటి.[5][6] 
+    పుదుచ్చేరిలోని యానం జిల్లాలో కూడా తెలుగు అధికారిక భాష. ఒడిశా, కర్ణాటక, తమిళనాడు, కేరళ, పంజాబ్, ఛత్తీస్‌గఢ్, మహారాష్ట్ర, అండమాన్ నికోబార్ దీవులలో గుర్తింపబడిన ద్వితీయ అధికారిక భాష. భారత ప్రభుత్వం భారతదేశ ప్రాచీన భాషలుగా గుర్తించిన ఆరుభాషలలో తెలుగు ఒకటి.[7][8]
+    ఇంచుమించుగా తెలుగులో 10,000 శాసనాలు పైనే ఉన్నాయి.భారతదేశం ఎటువంటి ఊడఁడ లేకుండా రెండువేల పైనాటినుండే తెలుగు మాట్లాడ్తున్నట్టుగా తెలియజేయబడింది, 2011 జనాభా లెక్కబట్టి దాదాపు 8.2 కోట్ల మందికి పైగ ఇప్పుడు మాట్లాడేవారున్నారు.[9] భారతదేశంలో మాతృభాషగా తెలుగు నాలుగో స్థానంలో ఉండగా, ప్రపంచంలో 15వ స్థానంలో ఉంది.[10][11] 
+    ఇది ద్రావిడభాషా కుటుంబంలో ఎక్కువమంది మాట్లాడే భాష. భారతదేశంలో ఇరవైరెండు షెడ్యూల్ భాషలలో ఇది ఒకటి.[12] ఇది అమెరికాలో వేగంగా పెంపొందుతున్న భాష.[13] 
+    తెలుగు భాషలో సుమారు 10,000 పాత శాసనాలు ఉన్నాయి.[14] కన్నడిగుడైన శ్రీకృష్ణదేవరాయలు తెలుగు భాషని 'దేశ భాషలందు తెలుగు లెస్స' అని పొగిడారు.
+    '''
+    
     
     merges,merge_rank,pair_to_id,id_to_pair = training(training_text)
-    c = encode("aaabcbcndhbb",merge_rank,pair_to_id)
-    print(c)
+    c = encode("సాయి మంచి అబ్బాయి.",merge_rank,pair_to_id)
+    # print(c)
     print(id_to_pair)
     d = decode(c,id_to_pair)
     print(d)
