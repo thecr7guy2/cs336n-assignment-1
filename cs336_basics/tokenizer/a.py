@@ -1,4 +1,5 @@
 import regex as re 
+from collections import Counter
 
 def form_pairs(text_in_bytes):
     pairs={}
@@ -87,10 +88,13 @@ def pre_token_merge(pair,byte_freq_lst,index2rep):
 
 
 def pretok_train(training_text,max_merges=None,index2rep=256):
-    pretok_list= training_text.split(" ")
-    freq_dict = frequency_dict(pretok_list)
-    byte_freq_lst= byte_seq_freq(freq_dict)
-    print(byte_freq_lst)
+    gpt2pat =  r"""'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+"""
+    counts  = Counter()
+    for match in re.finditer(gpt2pat,training_text):
+        token = match.group(0)
+        counts[token] += 1
+    print(counts)
+    byte_freq_lst= byte_seq_freq(dict(counts))
     merges = []
     if max_merges is None:
         max_merges = float("inf")
@@ -114,17 +118,18 @@ def pretok_train(training_text,max_merges=None,index2rep=256):
 
 def decode(encoded_list:list,vocab:dict) -> str :
     tokens= []
-    for i in range (0,len(encoded_list)):
-        if i in vocab.keys():
-            tokens.append(vocab[encoded_list[i]])
-        else:
-            continue
-    tokens = b"".join(tokens)
-    return tokens.decode("utf-8")
+    for i in range(len(encoded_list)):
+        tok = encoded_list[i]
+        if tok in vocab:
+            tokens.append(vocab[tok])
+    return b"".join(tokens).decode("utf-8")
 
 def pre_tok_encode(text:str,merges_rank,pair_to_id) -> list:
+    gpt2pat =  r"""'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+"""
     encoded_list = []
-    pretok_list= text.split(" ")
+    pretok_list =[]
+    for match in re.finditer(gpt2pat,text):
+        pretok_list.append(match.group(0))
     for i in pretok_list:
         text_in_bytes = i.encode("utf-8")
         while(True):
@@ -158,20 +163,21 @@ def pre_tok_encode(text:str,merges_rank,pair_to_id) -> list:
 
 def main():
     training_text = '''low low low low low lower lower widest widest widest newest newest newest newest newest newest'''
-    gpt2pat =  r"""'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+"""
+    
 
     merges,byte_freq_lst,merges_rank,pair_to_id,id_to_pair,vocab = pretok_train(training_text,index2rep=256)
-    # a = pretok_train(training_text,max_merges=None,index2rep=256)
+    # # a = pretok_train(training_text,max_merges=None,index2rep=256)
 
-    print(merges)
-    print(byte_freq_lst)
-    print(vocab)
+    # print(merges)
+    # print(byte_freq_lst)
+    # print(vocab)
 
-    text = "I am wearing a new watch which is low on my hand"
+    text = "I am wearing a new watch which is low on my hand."
+    print(f"The length of the text is {len(text)}")
 
     encoded_text = pre_tok_encode(text,merges_rank,pair_to_id)
 
-    print(encoded_text)
+    print(f"The length of encoded text is {len(encoded_text)}")
 
     decoded_text = decode(encoded_text,vocab)
 
